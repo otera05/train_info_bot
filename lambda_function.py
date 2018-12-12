@@ -17,12 +17,7 @@ logger.propagate = False
 
 # 環境変数初期化
 URL = 'https://rti-giken.jp/fhc/api/train_tetsudo/delay.json'
-ROUTES = ['中央･総武各駅停車', '中央線快速電車', '大江戸線', '京王線', '西武新宿線']
-WEBHOOK_URL = 'https://hooks.slack.com/services/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'
-
-# Lambda
-URL = os.environ['URL']
-ROUTES = os.environ['ROUTES']
+LINES = os.environ['LINES'].split(',')
 WEBHOOK_URL = os.environ['WEBHOOK_URL']
 
 
@@ -46,10 +41,10 @@ def create_body():
             logger.debug(msg)
 
             for result in results:
-                for route in ROUTES:
-                    if route in result['name']:
+                for line in LINES:
+                    if line in result['name']:
                         delay_flag = True
-                        msg = '{0} 時点の運行状況：{1}で遅延しています。'.format(dt, route)
+                        msg = '{0} 時点の運行状況：{1}で遅延しています。'.format(dt, line)
                         delay_info.append(msg)
                     else:
                         continue
